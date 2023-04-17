@@ -1,0 +1,2 @@
+# Auto_dow_fig_Wallhaven
+根据爬虫技术基于关键词自动下载Wallhaven中的图片，无损
