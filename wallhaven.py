@@ -107,7 +107,14 @@ def get_image_link(num_page,keyword) :
 		except Exception as e:
 			print(f"发生异常: {type(e).__name__} - {e}")
 			continue
-		return info_list
+	return info_list
+
+def prograss(num,i,len_info_list):
+	num_1 = int((i / int(num))*35)
+	a = ">" * num_1
+	b = "." * (35-num_1)               # 进度条
+	print("\r[{}{}]{:3}%".format(a,b,'%.2f'%((i/int(len_info_list))*100)),end="")
+	return i + 1
 
 def main():
 	# 获取搜索图片的关键字
@@ -141,14 +148,12 @@ def main():
 	try :
 		for info in info_list :
 			down_image(info,keyword)
-			i = i+1
-			num_1 = int((i / int(num))*35)
-			a = ">" * num_1
-			b = "." * (35-num_1)               # 进度条
-			print("\r[{}{}]{:3}%".format(a,b,'%.2f'%((i/int(len(info_list)))*100)),end="")
+			i = prograss(num,i,len(info_list))
 	except Exception as e:
 		print(f"发生异常: {type(e).__name__} - {e}")
 		input("\n发生异常,请检查网络，任意键结束:")
 	input("\n\n图片保存至  D:/{}\n\n任意键结束 :".format(keyword)).format(keyword)
-main()
 
+if __name__ == '__main__':
+    # Put that needs to run here
+	main()
