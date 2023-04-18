@@ -143,15 +143,17 @@ def main():
 
 	info_list = get_image_link(num_page,keyword)
 
-	i = 0
 	print("\n正在下载 : ")
 	try :
+		i = 0
 		for info in info_list :
 			down_image(info,keyword)
 			i = prograss(num,i,len(info_list))
 	except Exception as e:
 		print(f"发生异常: {type(e).__name__} - {e}")
 		input("\n发生异常,请检查网络，任意键结束:")
+
+		
 	input("\n\n图片保存至  D:/{}\n\n任意键结束 :".format(keyword)).format(keyword)
 
 if __name__ == '__main__':
