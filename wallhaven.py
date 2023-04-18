@@ -77,12 +77,12 @@ def down_image(info,keyword):
 				f.write(r.content)
 				f.close
 
-def main():
-	# 获取搜索图片的关键字
-	keyword = input("请输入要下载图片的主题名字(英文) : ")
-	url = "https://wallhaven.cc/search?q="+keyword
-	url_html = get_html(url)   # 获取目标链接的页面信息
-	soup = BeautifulSoup(url_html,"html.parser")    # 解析页面
+def	image_num(soup) :
+	'''
+		根据网页信息提取图片总数量
+		参数：
+			soup: html网页
+	'''
 	try :
 		#num = re.findall(r"\d+",soup.find("h1").get_text())[0]  # 正则表达式提取图片总页数
 		complex_num = re.findall(r"\d+",soup.find("h1").get_text()) 
@@ -95,11 +95,35 @@ def main():
 	except Exception as e:
 		print(f"发生异常: {type(e).__name__} - {e}")
 		input("\n发生异常,请检查网络，任意键结束:")
-		return 
+	return num
+	
+def get_image_link(num_page,keyword) :
+	info_list = []
+	for page in range(num_page) :   # 遍历全部页码
+		url = "https://wallhaven.cc/search?q="+keyword+"&page={}".format(page+1)
+		url_html = get_html(url)
+		try :
+			parser_html(url_html,info_list)
+		except Exception as e:
+			print(f"发生异常: {type(e).__name__} - {e}")
+			continue
+		return info_list
+
+def main():
+	# 获取搜索图片的关键字
+	keyword = input("请输入要下载图片的主题名字(英文) : ")
+	url = "https://wallhaven.cc/search?q="+keyword
+	url_html = get_html(url)   # 获取目标链接的页面信息
+	soup = BeautifulSoup(url_html,"html.parser")    # 解析页面
+
+
+	num = image_num(soup)
 	if num == '0' :   # 图片总数为 0,给出提示，程序结束
 		print("\n没有此关键词的图片 :")
 		input("\n任意键结束 :")
 		return
+	
+
 	flage = input("\n共有{}张,输入 0 取消,其他任意键下载 :  ".format(num))  # 提示总图片数,是否确认下载
 	if flage == '0' :
 		print("\n下载已取消")
@@ -108,14 +132,10 @@ def main():
 		print("\n正在获取照片信息 : ")
 	print("\n")
 	num_page = (int(num) // 24) + 1   # 获取总页数
-	info_list = []
-	for page in range(num_page) :   # 遍历全部页码
-		url = "https://wallhaven.cc/search?q="+keyword+"&page={}".format(page+1)
-		url_html = get_html(url)
-		try :
-			parser_html(url_html,info_list)
-		except :
-			continue
+
+
+	info_list = get_image_link(num_page,keyword)
+
 	i = 0
 	print("\n正在下载 : ")
 	try :
@@ -126,9 +146,9 @@ def main():
 			a = ">" * num_1
 			b = "." * (35-num_1)               # 进度条
 			print("\r[{}{}]{:3}%".format(a,b,'%.2f'%((i/int(len(info_list)))*100)),end="")
-	except :
+	except Exception as e:
+		print(f"发生异常: {type(e).__name__} - {e}")
 		input("\n发生异常,请检查网络，任意键结束:")
-	print("\npan神精神永存\n")
 	input("\n\n图片保存至  D:/{}\n\n任意键结束 :".format(keyword)).format(keyword)
 main()
 
