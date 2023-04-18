@@ -143,9 +143,9 @@ def main():
 
 	info_list = get_image_link(num_page,keyword)
 
-	i = 0
 	print("\n正在下载 : ")
 	try :
+		i = 0
 		for info in info_list :
 			down_image(info,keyword)
 			i = prograss(num,i,len(info_list))
